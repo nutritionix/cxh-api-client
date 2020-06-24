@@ -140,7 +140,7 @@ module.exports = {
       "error",
       1
     ],
-    "max-len":                                         "off",
+    "max-len":                                         ["warn", { "code": 120 }],
     "new-parens":                                      "off",
     "newline-per-chained-call":                        "off",
     "no-bitwise":                                      "error",

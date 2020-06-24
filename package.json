@@ -1,6 +1,6 @@
 {
   "name": "cxh-api-client",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "CXH API client library",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
@@ -20,6 +20,7 @@
     "test:lint": "eslint -c .eslintrc.js --ext .ts --ignore-pattern *.spec.ts ./src",
     "test:unit": "nyc --silent ava",
     "watch": "run-s clean build:main && run-p \"build:main -- -w\" \"test:unit -- --watch\"",
+    "watch-notest": "run-s clean build:main && npm run build:main -- -w",
     "cov": "run-s build test:unit cov:html && open-cli coverage/index.html",
     "cov:html": "nyc report --reporter=html",
     "cov:send": "nyc report --reporter=lcov && codecov",
@@ -31,7 +32,7 @@
     "version": "standard-version",
     "reset": "git clean -dfx && git reset --hard && npm i",
     "clean": "trash build test",
-    "prepare-release": "run-s reset test cov:check doc:html version doc:publish"
+    "prepare-release": "run-s reset test doc:html version doc:publish"
   },
   "scripts-info": {
     "info": "Display information about the package scripts",
@@ -49,7 +50,9 @@
   "engines": {
     "node": ">=8.9"
   },
-  "dependencies": {},
+  "dependencies": {
+    "axios": "^0.19.2"
+  },
   "devDependencies": {
     "@bitjson/npm-scripts-info": "^1.0.0",
     "@bitjson/typedoc": "^0.15.0-0",
@@ -77,9 +80,6 @@
     "failFast": true,
     "files": [
       "build/main/**/*.spec.js"
-    ],
-    "sources": [
-      "build/main/**/*.js"
     ]
   },
   "config": {
