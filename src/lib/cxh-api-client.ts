@@ -2,9 +2,9 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 const DEFAULT_BASEURL = 'https://api.syndigo.com';
 
-class API {
+export class CxhApiClient {
   private axios: AxiosInstance;
-  private initialization: Promise<API> = null;
+  private initialization: Promise<CxhApiClient> = null;
 
   public async request(config: AxiosRequestConfig) {
     if (!this.initialization) {
@@ -67,5 +67,3 @@ class API {
     return response.Results[0];
   }
 }
-
-export const api = new API();

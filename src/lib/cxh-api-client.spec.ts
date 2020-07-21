@@ -1,6 +1,6 @@
 import test from 'ava';
-import { api } from './cxh-api-client';
+import { CxhApiClient } from './cxh-api-client';
 
-test('API created', (t) => {
-  t.is(typeof api, 'object');
+test('API Constructor is defined', (t) => {
+  t.is(typeof CxhApiClient, 'function');
 });
