@@ -6,6 +6,11 @@ export class CxhApiClient {
   private axios: AxiosInstance;
   private initialization: Promise<CxhApiClient> = null;
 
+  constructor(
+    private readonly username: string,
+    private readonly secret: string,
+    private readonly  baseUrl = DEFAULT_BASEURL) {}
+
   public async request(config: AxiosRequestConfig) {
     if (!this.initialization) {
       throw new Error('CXH API Client is not initialized');
@@ -15,12 +20,12 @@ export class CxhApiClient {
     return (await this.axios(config)).data;
   }
 
-  public init(username: string, secret: string, baseUrl = DEFAULT_BASEURL) {
+  public init() {
     this.initialization = (async () => {
-      const { data } = await axios.get(`${baseUrl}/api/auth?username=${username}&secret=${secret}`);
+      const { data } = await axios.get(`${this.baseUrl}/api/auth?username=${this.username}&secret=${this.secret}`);
 
       this.axios = axios.create({
-        baseURL: baseUrl,
+        baseURL: this.baseUrl,
         headers: {
           'Authorization': `EN ${data.Value}`,
           'Content-Type': 'application/json'
@@ -29,6 +34,8 @@ export class CxhApiClient {
 
       return this;
     })();
+
+    return this;
   }
 
   public async getGTIN(
