@@ -13,7 +13,7 @@ export class CxhApiClient {
 
   public async request(config: AxiosRequestConfig) {
     if (!this.initialization) {
-      throw new Error('CXH API Client is not initialized');
+      this.init();
     }
 
     await this.initialization;
