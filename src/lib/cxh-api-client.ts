@@ -1,16 +1,16 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import * as querystring from 'querystring';
 
-const DEFAULT_BASEURL = 'https://api.syndigo.com';
+export const DEFAULT_BASEURL = 'https://api.syndigo.com';
 
 export class CxhApiClient {
-  private axios: AxiosInstance;
-  private initialization: Promise<CxhApiClient> = null;
+  protected axios: AxiosInstance;
+  protected initialization: Promise<CxhApiClient> = null;
 
   constructor(
-    private readonly username: string,
-    private readonly secret: string,
-    private readonly  baseUrl = DEFAULT_BASEURL) {}
+    protected readonly username: string,
+    protected readonly secret: string,
+    protected readonly  baseUrl = DEFAULT_BASEURL) {}
 
   public async request(config: AxiosRequestConfig) {
     if (!this.initialization) {
