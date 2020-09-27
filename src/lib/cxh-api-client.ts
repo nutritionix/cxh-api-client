@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import * as querystring from 'querystring';
 
 const DEFAULT_BASEURL = 'https://api.syndigo.com';
 
@@ -17,12 +18,31 @@ export class CxhApiClient {
     }
 
     await this.initialization;
-    return (await this.axios(config)).data;
+    try {
+      return (await this.axios(config)).data;
+    } catch (e) {
+      if (e?.response?.status === 401) {
+        // trying to get the new token in case it's expired.
+        this.init();
+
+        await this.initialization;
+
+        // Throw outside if the second request still fails
+        return (await this.axios(config)).data;
+      } else {
+        throw e;
+      }
+    }
   }
 
   public init() {
     this.initialization = (async () => {
-      const { data } = await axios.get(`${this.baseUrl}/api/auth?username=${this.username}&secret=${this.secret}`);
+      const queryString = querystring.stringify({
+        username: this.username,
+        secret: this.secret,
+      });
+
+      const { data } = await axios.get(`${this.baseUrl}/api/auth?${queryString}`);
 
       this.axios = axios.create({
         baseURL: this.baseUrl,
@@ -72,5 +92,32 @@ export class CxhApiClient {
     });
 
     return response.Results[0];
+  }
+
+  public async getProductsByCVID(cvid: number | string, DataOwner: string) {
+    const response = await this.request({
+      method: 'post',
+      url: '/ui/product/',
+      data: {
+        DataOwner,
+        "Archived": false,
+        "AttributeFilters": [{
+          "AttributeId": "c3b7caa9-f98c-45bc-b2f9-0ca413ed3ad5",
+          "Values": [cvid]
+        }]
+      }
+    });
+
+    return response.Results;
+  }
+
+  public async patchProduct(id: string, DataOwner: string, data: any) {
+    const requestBody = { id, DataOwner, ...data };
+
+    return this.request({
+      method: 'put',
+      url: `/api/product/${id}/patch`,
+      data: requestBody,
+    });
   }
 }
